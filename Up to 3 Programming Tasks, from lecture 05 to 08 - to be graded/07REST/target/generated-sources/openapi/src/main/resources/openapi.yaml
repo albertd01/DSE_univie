@@ -1,0 +1,446 @@
+openapi: 3.0.3
+info:
+  description: API for scheduling and managing meeting polls.
+  title: Meeting Scheduler API
+  version: 1.0.0
+servers:
+- url: http://localhost:8080/rest/pt6
+paths:
+  /meetings:
+    post:
+      operationId: createMeeting
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MeetingCreationRequest'
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Meeting'
+          description: Meeting created successfully
+      summary: Create a new meeting poll
+      x-content-type: application/json
+      x-accepts:
+      - application/json
+  /meetings/{meetingId}:
+    delete:
+      operationId: deleteMeeting
+      parameters:
+      - explode: false
+        in: path
+        name: meetingId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "204":
+          description: Meeting deleted successfully
+      summary: Delete a meeting poll
+      x-accepts:
+      - application/json
+    get:
+      operationId: getMeeting
+      parameters:
+      - explode: false
+        in: path
+        name: meetingId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Meeting'
+          description: Meeting details retrieved successfully
+      summary: Get meeting details
+      x-accepts:
+      - application/json
+    put:
+      operationId: updateMeeting
+      parameters:
+      - explode: false
+        in: path
+        name: meetingId
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MeetingUpdateRequest'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Meeting'
+          description: Meeting updated successfully
+      summary: Update a meeting poll
+      x-content-type: application/json
+      x-accepts:
+      - application/json
+  /meetings/{meetingId}/timeslots:
+    post:
+      operationId: addTimeSlots
+      parameters:
+      - explode: false
+        in: path
+        name: meetingId
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TimeSlotRequest'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Meeting'
+          description: Time slots added successfully
+      summary: Add time slots to a meeting poll
+      x-content-type: application/json
+      x-accepts:
+      - application/json
+  /meetings/{meetingId}/timeslots/{timeSlotId}:
+    delete:
+      operationId: removeTimeSlot
+      parameters:
+      - explode: false
+        in: path
+        name: meetingId
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: timeSlotId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "204":
+          description: Time slot removed successfully
+      summary: Remove a time slot from a meeting poll
+      x-accepts:
+      - application/json
+  /meetings/{meetingId}/publish:
+    post:
+      operationId: publishMeeting
+      parameters:
+      - explode: false
+        in: path
+        name: meetingId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Meeting'
+          description: Meeting poll published successfully
+      summary: Publish a meeting poll
+      x-accepts:
+      - application/json
+  /meetings/{meetingId}/responses:
+    post:
+      operationId: submitResponses
+      parameters:
+      - explode: false
+        in: path
+        name: meetingId
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MeetingResponse'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Meeting'
+          description: Responses submitted successfully
+      summary: Submit responses to a meeting poll
+      x-content-type: application/json
+      x-accepts:
+      - application/json
+  /meetings/{meetingId}/export:
+    get:
+      operationId: exportResponses
+      parameters:
+      - explode: false
+        in: path
+        name: meetingId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MeetingExport'
+          description: Meeting responses exported successfully
+      summary: Export meeting responses
+      x-accepts:
+      - application/json
+components:
+  schemas:
+    MeetingCreationRequest:
+      example:
+        creator: creator
+        description: description
+        timeSlots:
+        - availabilities:
+          - availability: availability
+            user: user
+          - availability: availability
+            user: user
+          start: 2000-01-23T04:56:07.000+00:00
+          end: 2000-01-23T04:56:07.000+00:00
+          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        - availabilities:
+          - availability: availability
+            user: user
+          - availability: availability
+            user: user
+          start: 2000-01-23T04:56:07.000+00:00
+          end: 2000-01-23T04:56:07.000+00:00
+          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        title: title
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        creator:
+          type: string
+        timeSlots:
+          items:
+            $ref: '#/components/schemas/TimeSlot'
+          type: array
+      required:
+      - creator
+      - title
+      type: object
+    MeetingUpdateRequest:
+      example:
+        description: description
+        timeSlots:
+        - availabilities:
+          - availability: availability
+            user: user
+          - availability: availability
+            user: user
+          start: 2000-01-23T04:56:07.000+00:00
+          end: 2000-01-23T04:56:07.000+00:00
+          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        - availabilities:
+          - availability: availability
+            user: user
+          - availability: availability
+            user: user
+          start: 2000-01-23T04:56:07.000+00:00
+          end: 2000-01-23T04:56:07.000+00:00
+          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        title: title
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        timeSlots:
+          items:
+            $ref: '#/components/schemas/TimeSlot'
+          type: array
+      type: object
+    TimeSlotRequest:
+      example:
+        timeSlots:
+        - availabilities:
+          - availability: availability
+            user: user
+          - availability: availability
+            user: user
+          start: 2000-01-23T04:56:07.000+00:00
+          end: 2000-01-23T04:56:07.000+00:00
+          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        - availabilities:
+          - availability: availability
+            user: user
+          - availability: availability
+            user: user
+          start: 2000-01-23T04:56:07.000+00:00
+          end: 2000-01-23T04:56:07.000+00:00
+          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+      properties:
+        timeSlots:
+          items:
+            $ref: '#/components/schemas/TimeSlot'
+          type: array
+      required:
+      - timeSlots
+      type: object
+    TimeSlot:
+      example:
+        availabilities:
+        - availability: availability
+          user: user
+        - availability: availability
+          user: user
+        start: 2000-01-23T04:56:07.000+00:00
+        end: 2000-01-23T04:56:07.000+00:00
+        id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+      properties:
+        id:
+          format: uuid
+          type: string
+        start:
+          format: date-time
+          type: string
+        end:
+          format: date-time
+          type: string
+        availabilities:
+          items:
+            $ref: '#/components/schemas/Availability'
+          type: array
+      type: object
+    Availability:
+      example:
+        availability: availability
+        user: user
+      properties:
+        user:
+          type: string
+        availability:
+          $ref: '#/components/schemas/AvailabilityEnum'
+      type: object
+    Meeting:
+      example:
+        creator: creator
+        description: description
+        timeSlots:
+        - availabilities:
+          - availability: availability
+            user: user
+          - availability: availability
+            user: user
+          start: 2000-01-23T04:56:07.000+00:00
+          end: 2000-01-23T04:56:07.000+00:00
+          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        - availabilities:
+          - availability: availability
+            user: user
+          - availability: availability
+            user: user
+          start: 2000-01-23T04:56:07.000+00:00
+          end: 2000-01-23T04:56:07.000+00:00
+          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        published: true
+        title: title
+      properties:
+        id:
+          format: uuid
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        creator:
+          type: string
+        timeSlots:
+          items:
+            $ref: '#/components/schemas/TimeSlot'
+          type: array
+        published:
+          type: boolean
+      type: object
+    MeetingResponse:
+      example:
+        name: name
+        responses:
+        - timeSlotId: timeSlotId
+          availability: availability
+        - timeSlotId: timeSlotId
+          availability: availability
+      properties:
+        name:
+          type: string
+        responses:
+          items:
+            $ref: '#/components/schemas/TimeSlotResponse'
+          type: array
+      required:
+      - name
+      - responses
+      type: object
+    TimeSlotResponse:
+      example:
+        timeSlotId: timeSlotId
+        availability: availability
+      properties:
+        timeSlotId:
+          type: string
+        availability:
+          $ref: '#/components/schemas/AvailabilityEnum'
+      type: object
+    MeetingExport:
+      example:
+        responses:
+        - name: name
+          responses:
+          - timeSlotId: timeSlotId
+            availability: availability
+          - timeSlotId: timeSlotId
+            availability: availability
+        - name: name
+          responses:
+          - timeSlotId: timeSlotId
+            availability: availability
+          - timeSlotId: timeSlotId
+            availability: availability
+        meetingId: meetingId
+      properties:
+        meetingId:
+          type: string
+        responses:
+          items:
+            $ref: '#/components/schemas/MeetingResponse'
+          type: array
+      type: object
+    AvailabilityEnum:
+      enum:
+      - "true"
+      - "false"
+      - maybe
+      type: string

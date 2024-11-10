@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+  xmlns:tns="Server.soap"
+  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  name="Bank"
+  targetNamespace="Server.soap">
+  <!--
+      The `types` element defines the data types (XML elements)
+      that are used by the web service.
+   -->
+  <wsdl:types>
+    <xsd:schema targetNamespace="Server.soap">
+      <xsd:element name="transferMoneyRequest">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="from" type="xsd:string" />
+            <xsd:element name="to" type="xsd:string" />
+            <xsd:element name="amount" type="xsd:double" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+
+
+      <xsd:element name="auditRequest">
+        <xsd:complexType />
+      </xsd:element>
+      <xsd:element name="auditResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="amount" type="xsd:double" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+
+      <xsd:element name="getAccountsRequest">
+        <xsd:complexType />
+      </xsd:element>
+      <xsd:element name="getAccountsResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="accounts" type="xsd:string" maxOccurs="unbounded" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:schema>
+  </wsdl:types>
+
+
+  <!--
+      A wsdl `message` element is used to define a message
+      exchanged between a web service, consisting of zero
+      or more `part`s.
+   -->
+
+  <wsdl:message name="transferMoneyRequest">
+    <wsdl:part name="parameters" element="tns:transferMoneyRequest" />
+  </wsdl:message>
+
+  <wsdl:message name="auditRequest">
+    <wsdl:part name="parameters" element="tns:auditRequest" />
+  </wsdl:message>
+  <wsdl:message name="auditResponse">
+    <wsdl:part name="parameters" element="tns:auditResponse" />
+  </wsdl:message>
+
+  <wsdl:message name="getAccountsRequest">
+    <wsdl:part name="parameters" element="tns:getAccountsRequest" />
+  </wsdl:message>
+  <wsdl:message name="getAccountsResponse">
+    <wsdl:part name="parameters" element="tns:getAccountsResponse" />
+  </wsdl:message>
+
+  <!--
+      A WSDL `portType` is used to combine multiple `message`s
+      (e.g. input, output) into a single operation.
+
+      Here we define synchronous (input/output) operations
+      and the `message`s that must be used for each.
+   -->
+  <wsdl:portType name="BankingServicePortType">
+    <wsdl:operation name="transferMoney">
+      <wsdl:input message="tns:transferMoneyRequest" />
+    </wsdl:operation>
+    <wsdl:operation name="audit">
+      <wsdl:input message="tns:auditRequest" />
+      <wsdl:output message="tns:auditResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="getAccounts">
+      <wsdl:input message="tns:getAccountsRequest" />
+      <wsdl:output message="tns:getAccountsResponse" />
+    </wsdl:operation>
+  </wsdl:portType>
+
+  <!--
+      The `binding` element defines exactly how each
+      `operation` will take place over the network.
+      In this case, we are using SOAP.
+   -->
+   <wsdl:binding name="BankingServiceBinding" type="tns:BankingServicePortType">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="transferMoney">
+        <soap:operation soapAction="TransferMoney"/>
+        <wsdl:input>
+            <soap:body use="literal"/>
+        </wsdl:input>
+        <wsdl:output>
+            <soap:body use="literal"/>
+        </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="audit">
+        <soap:operation soapAction="Audit"/>
+        <wsdl:input>
+            <soap:body use="literal"/>
+        </wsdl:input>
+        <wsdl:output>
+            <soap:body use="literal"/>
+        </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getAccounts">
+        <soap:operation soapAction="GetAccounts"/>
+        <wsdl:input>
+            <soap:body use="literal"/>
+        </wsdl:input>
+        <wsdl:output>
+            <soap:body use="literal"/>
+        </wsdl:output>
+    </wsdl:operation>
+</wsdl:binding>
+
+<wsdl:service name="BankingService">
+    <wsdl:port name="BankingServicePort" binding="tns:BankingServiceBinding">
+        <soap:address location="http://localhost:8002/bankingservice"/>
+    </wsdl:port>
+</wsdl:service>
+</wsdl:definitions>
